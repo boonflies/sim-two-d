@@ -53,7 +53,7 @@ class Viewer:
     # initialize the window
     self.window = gtk.Window( gtk.WINDOW_TOPLEVEL )
     self.window.set_title( 'Sobot Rimulator' )
-    self.window.set_resizable( False )
+    self.window.set_resizable( True )
     self.window.connect( 'delete_event', self.on_delete )
 
     # initialize the drawing_area
