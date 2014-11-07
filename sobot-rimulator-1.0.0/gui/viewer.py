@@ -27,6 +27,7 @@ import gobject
 
 from frame import *
 from painter import *
+from obstacle_selection_window import *
 
 DEFAULT_VIEW_PIX_W = 800    # pixels
 DEFAULT_VIEW_PIX_H = 800    # pixels
@@ -98,6 +99,10 @@ class Viewer:
     self.button_reset.set_image_position( gtk.POS_LEFT )
     self.button_reset.connect( 'clicked', self.on_reset )
 
+    # build the draw obstacle button
+    self.button_draw_obstacle = gtk.Button( 'Draw Obstacle')
+    self.button_draw_obstacle.connect('clicked', self.on_draw_obstacle)
+
     # build the save map button
     self.button_save_map = gtk.Button( 'Save Map' )
     save_map_image = gtk.Image()
@@ -114,13 +119,18 @@ class Viewer:
     self.button_load_map.set_image_position( gtk.POS_LEFT )
     self.button_load_map.connect( 'clicked', self.on_load_map )
 
-    # build the random map buttons
+    # build the random map button
     self.button_random_map = gtk.Button( 'Random Map' )
     random_map_image = gtk.Image()
     random_map_image.set_from_stock( gtk.STOCK_REFRESH, gtk.ICON_SIZE_BUTTON )
     self.button_random_map.set_image( random_map_image )
     self.button_random_map.set_image_position( gtk.POS_LEFT )
     self.button_random_map.connect( 'clicked', self.on_random_map )
+
+    # build the clear map button
+    self.button_clear_map = gtk.Button( 'Clear Map')
+    self.button_clear_map.connect('clicked', self.on_clear_map)
+
 
     # build the draw-invisibles toggle button
     self.draw_invisibles = False                  # controls whether invisible world elements are displayed
@@ -140,9 +150,11 @@ class Viewer:
 
     # pack the map control buttons
     map_controls_box = gtk.HBox( spacing = 5 )
+    map_controls_box.pack_start( self.button_draw_obstacle, False, False)
     map_controls_box.pack_start( self.button_save_map, False, False )
     map_controls_box.pack_start( self.button_load_map, False, False )
     map_controls_box.pack_start( self.button_random_map, False, False )
+    map_controls_box.pack_start( self.button_clear_map, False, False)
 
     # pack the invisibles button
     invisibles_button_box = gtk.HBox()
@@ -226,6 +238,10 @@ class Viewer:
     self.simulator.reset_sim()
 
 
+  def on_draw_obstacle( self, widget):
+    self.obstacle_selection_window = ObstacleSelectionWindow()
+
+
   def on_save_map( self, widget ):
     # create the file chooser
     file_chooser = gtk.FileChooserDialog( title = 'Save Map',
@@ -270,6 +286,28 @@ class Viewer:
   def on_random_map( self, widget ):
     self.simulator.random_map()
 
+  def on_clear_map(self, widget):
+      # reset the viewer
+    self.control_panel_state_init()
+
+    # create the simulation world
+    self.world = World( self.period )
+
+    # create the robot
+    robot = Robot()
+    self.world.add_robot( robot )
+
+    # generate a random environment
+    if random:
+      self.map_manager.random_map( self.world )
+    else:
+      self.map_manager.apply_to_world( self.world )
+
+    # create the world view
+    self.world_view = WorldView( self.world, self.viewer )
+
+    # render the initial world
+    self.draw_world()
 
   def on_draw_invisibles( self, widget ):
     # toggle the draw_invisibles state
