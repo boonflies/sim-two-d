@@ -41,24 +41,42 @@ class ObstacleSelectionWindow:
 
     # == initialize the buttons
 
+    # build the obstacle type selection static text
+
+
     # build the obstacle selection combobox
     self.combobox_obstacle_selection = gtk.combo_box_new_text()
     self.combobox_obstacle_selection.append_text('Rectangle')
     self.combobox_obstacle_selection.append_text('Circle')
     self.text = self.combobox_obstacle_selection.get_active_text()
     self.combobox_obstacle_selection.connect('changed', self.on_change_cb)
-    #self.window_draw_obstacle.add( self.combobox_obstacle_selection )
-    #self.combobox_obstacle_selection.set_active(0)
+
+
+    # build the ok cancel buttons
+    self.button_ok = gtk.Button('OK')
+    self.button_cancel = gtk.Button('Cancel')
+    self.button_ok.connect('clicked', self.on_ok)
+    self.button_cancel.connect('clicked', self.on_cancel)
+
 
     # == lay out the window
 
     # pack the obstacle selection buttons
     obs_selection_box = gtk.HBox( spacing = 5 )
+    obs_selection_box.pack_start( )
     obs_selection_box.pack_start( self.combobox_obstacle_selection, False, False )
+
+    # pack the ok cancel buttons
+    ok_cancel_box = gtk.HBox( spacing = 5)
+    ok_cancel_box.pack_start( self.button_ok, False, False)
+    ok_cancel_box.pack_start( self.button_cancel, False, False)
 
     # align the controls
     obs_selection_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0 )
     obs_selection_alignment.add( obs_selection_box )
+
+    ok_cancel_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0 )
+    ok_cancel_alignment.add( ok_cancel_box )
 
     # create the alert box
     self.alert_box = gtk.Label()
@@ -66,6 +84,7 @@ class ObstacleSelectionWindow:
     # lay out the simulation view and all of the controls
     layout_box = gtk.VBox()
     layout_box.pack_start( obs_selection_alignment, False, False, 5 )
+    layout_box.pack_start( ok_cancel_alignment, False, False, 5 )
     layout_box.pack_start( self.alert_box, False, False, 5 )
 
 
@@ -80,3 +99,9 @@ class ObstacleSelectionWindow:
     model = self.combobox_obstacle_selection.get_model()
     index = self.combobox_obstacle_selection.get_active()
     print model, index
+
+  def on_ok(self, widget):
+    pass
+
+  def on_cancel(self, widget):
+    pass

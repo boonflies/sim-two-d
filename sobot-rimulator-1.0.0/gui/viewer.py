@@ -33,6 +33,8 @@ DEFAULT_VIEW_PIX_W = 800    # pixels
 DEFAULT_VIEW_PIX_H = 800    # pixels
 DEFAULT_ZOOM = 100          # pixels per meter
 
+
+
 # user response codes for file chooser dialog buttons
 LS_DIALOG_RESPONSE_CANCEL = 1
 LS_DIALOG_RESPONSE_ACCEPT = 2
@@ -56,6 +58,10 @@ class Viewer:
     self.window.set_title( 'Sobot Rimulator' )
     self.window.set_resizable( True )
     self.window.connect( 'delete_event', self.on_delete )
+
+    # initialize the eventbox (to get mouse position on click)
+    self.box  = gtk.EventBox ()
+    self.box.connect ('button-press-event', self.onclick)
 
     # initialize the drawing_area
     self.drawing_area = gtk.DrawingArea()
@@ -179,8 +185,11 @@ class Viewer:
     layout_box.pack_start( map_controls_alignment, False, False, 5 )
     layout_box.pack_start( invisibles_button_alignment, False, False, 5 )
 
-    # apply the layout
-    self.window.add( layout_box )
+    # apply the layout to event box
+    self.box.add(layout_box)
+
+    # apply the event box with the layout to the window
+    self.window.add( self.box )
 
     # show the simulator window
     self.window.show_all()
@@ -340,3 +349,6 @@ class Viewer:
     draw_invisibles_image.set_from_stock( gtk.STOCK_ADD, gtk.ICON_SIZE_BUTTON )
     self.button_draw_invisibles.set_image( draw_invisibles_image )
     self.button_draw_invisibles.set_label( 'Show Invisibles' )
+
+  def onclick(self, Box, event):
+   print event.x, event.y
