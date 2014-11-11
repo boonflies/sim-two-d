@@ -21,7 +21,7 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 
-from frame import *
+from circle_dimension_window import *
 
 # user response codes for file chooser dialog buttons
 LS_DIALOG_RESPONSE_CANCEL = 1
@@ -31,8 +31,9 @@ class ObstacleSelectionWindow:
 
   def __init__( self ):
 
-    # initialize frame
-    self.current_frame = Frame()
+    # variables for holding obstacle position
+    self.obstacle_x = 0
+    self.obstacle_y = 0
 
     # initialize the window
     self.window_draw_obstacle = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -41,8 +42,8 @@ class ObstacleSelectionWindow:
 
     # == initialize the buttons
 
-    # build the obstacle type selection static text
-
+    # build the label for obstacle selection combobox
+    self.label_obstacle_selection = gtk.Label( 'Obstacle type' )
 
     # build the obstacle selection combobox
     self.combobox_obstacle_selection = gtk.combo_box_new_text()
@@ -51,6 +52,9 @@ class ObstacleSelectionWindow:
     self.text = self.combobox_obstacle_selection.get_active_text()
     self.combobox_obstacle_selection.connect('changed', self.on_change_cb)
 
+    # build the dimension button
+    self.button_dimension = gtk.Button( 'Dimension' )
+    self.button_dimension.connect( 'clicked', self.on_dimension )
 
     # build the ok cancel buttons
     self.button_ok = gtk.Button('OK')
@@ -63,8 +67,9 @@ class ObstacleSelectionWindow:
 
     # pack the obstacle selection buttons
     obs_selection_box = gtk.HBox( spacing = 5 )
-    obs_selection_box.pack_start( )
+    obs_selection_box.pack_start( self.label_obstacle_selection )
     obs_selection_box.pack_start( self.combobox_obstacle_selection, False, False )
+    obs_selection_box.pack_start( self.button_dimension, False, False )
 
     # pack the ok cancel buttons
     ok_cancel_box = gtk.HBox( spacing = 5)
@@ -81,7 +86,7 @@ class ObstacleSelectionWindow:
     # create the alert box
     self.alert_box = gtk.Label()
 
-    # lay out the simulation view and all of the controls
+    # lay out the obstacle selection window and all of the controls
     layout_box = gtk.VBox()
     layout_box.pack_start( obs_selection_alignment, False, False, 5 )
     layout_box.pack_start( ok_cancel_alignment, False, False, 5 )
@@ -98,10 +103,14 @@ class ObstacleSelectionWindow:
   def on_change_cb(self, widget):
     model = self.combobox_obstacle_selection.get_model()
     index = self.combobox_obstacle_selection.get_active()
-    print model, index
+    self.alert_box.set_text( 'Define dimension of obstacle - click Dimension button')
 
   def on_ok(self, widget):
     pass
 
   def on_cancel(self, widget):
-    pass
+    self.window_draw_obstacle.destroy()
+
+
+  def on_dimension(self, widget):
+    self.window_circle_dimension = CircleDimensionWindow()

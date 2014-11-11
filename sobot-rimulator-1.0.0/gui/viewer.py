@@ -351,4 +351,5 @@ class Viewer:
     self.button_draw_invisibles.set_label( 'Show Invisibles' )
 
   def onclick(self, Box, event):
-   print event.x, event.y
+    print event.x, event.y
+    return [event.x, event.y]
