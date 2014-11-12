@@ -70,6 +70,7 @@ class Simulator:
     robot = Robot()
     self.world.add_robot( robot )
 
+
     # generate a random environment
     if random:
       self.map_manager.random_map( self.world )
@@ -120,7 +121,28 @@ class Simulator:
 
   def random_map( self ):
     self.pause_sim()
-    self.initialize_sim( random = True )
+    self.initialize_sim( )
+
+  def initialize_sim_random_map( self, random_obstacle_type ):
+    # reset the viewer
+    self.viewer.control_panel_state_init()
+
+    # create the simulation world
+    self.world = World( self.period )
+
+    # create the robot
+    robot = Robot()
+    self.world.add_robot( robot )
+
+    # generate a random environment
+    self.random_obstacle_type = random_obstacle_type
+    self.map_manager.random_map( self.world, self.random_obstacle_type )
+
+    # create the world view
+    self.world_view = WorldView( self.world, self.viewer )
+
+    # render the initial world
+    self.draw_world()
 
 
   def draw_world( self ):

@@ -28,6 +28,7 @@ import gobject
 from frame import *
 from painter import *
 from obstacle_selection_window import *
+from random_type_selection_window import *
 
 DEFAULT_VIEW_PIX_W = 800    # pixels
 DEFAULT_VIEW_PIX_H = 800    # pixels
@@ -42,6 +43,14 @@ LS_DIALOG_RESPONSE_ACCEPT = 2
 class Viewer:
 
   def __init__( self, simulator ):
+
+    # X coordinate of viewer (value when mouse is clicked on viewer)
+    self.x_coordinate = ''
+    self.y_coordinate = ''
+
+    # Initialize obsacle selection window
+    self.obstacle_selection_window = ObstacleSelectionWindow()
+
     # bind the simulator
     self.simulator = simulator
 
@@ -248,7 +257,7 @@ class Viewer:
 
 
   def on_draw_obstacle( self, widget):
-    self.obstacle_selection_window = ObstacleSelectionWindow()
+    self.obstacle_selection_window.create_obstacle_window()
 
 
   def on_save_map( self, widget ):
@@ -293,30 +302,32 @@ class Viewer:
 
 
   def on_random_map( self, widget ):
-    self.simulator.random_map()
+    random_obstacle_type = RandomTypeSelectionWindow( self.simulator )
+##    self.simulator.random_map()
 
   def on_clear_map(self, widget):
+    pass
       # reset the viewer
-    self.control_panel_state_init()
-
-    # create the simulation world
-    self.world = World( self.period )
-
-    # create the robot
-    robot = Robot()
-    self.world.add_robot( robot )
-
-    # generate a random environment
-    if random:
-      self.map_manager.random_map( self.world )
-    else:
-      self.map_manager.apply_to_world( self.world )
-
-    # create the world view
-    self.world_view = WorldView( self.world, self.viewer )
-
-    # render the initial world
-    self.draw_world()
+##    self.control_panel_state_init()
+##
+##    # create the simulation world
+##    self.world = World( self.period )
+##
+##    # create the robot
+##    robot = Robot()
+##    self.world.add_robot( robot )
+##
+##    # generate a random environment
+##    if random:
+##      self.map_manager.random_map( self.world )
+##    else:
+##      self.map_manager.apply_to_world( self.world )
+##
+##    # create the world view
+##    self.world_view = WorldView( self.world, self.viewer )
+##
+##    # render the initial world
+##    self.draw_world()
 
   def on_draw_invisibles( self, widget ):
     # toggle the draw_invisibles state
@@ -350,6 +361,9 @@ class Viewer:
     self.button_draw_invisibles.set_image( draw_invisibles_image )
     self.button_draw_invisibles.set_label( 'Show Invisibles' )
 
+
   def onclick(self, Box, event):
+    self.x_coordinate = str( event.x )
+    self.y_coordinate = str( event.y )
+    self.obstacle_selection_window.set_coordinate( self.x_coordinate, self.y_coordinate )
     print event.x, event.y
-    return [event.x, event.y]

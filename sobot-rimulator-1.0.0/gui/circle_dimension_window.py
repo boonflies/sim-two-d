@@ -21,9 +21,6 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 
-from viewer import *
-from models.map_manager import *
-
 # user response codes for file chooser dialog buttons
 LS_DIALOG_RESPONSE_CANCEL = 1
 LS_DIALOG_RESPONSE_ACCEPT = 2
@@ -32,7 +29,10 @@ class CircleDimensionWindow:
 
   def __init__( self ):
 
-    self.mapmanager = MapManager()
+    self.x_circle = ''
+    self.y_circle = ''
+
+  def create_circle_dimension_window( self ):
 
     # initialize the window
     self.window_circle_dimension = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -48,7 +48,7 @@ class CircleDimensionWindow:
     self.entry_obstacle_position_x = gtk.Entry()
 
     # build position update button
-    self.button_position_update = gtk.Button( 'Click here to Update')
+    self.button_position_update = gtk.Button( 'Click to Update X, Y position' )
     self.button_position_update.connect( 'clicked', self.on_update )
 
     # build the label for obstacle y position
@@ -63,6 +63,10 @@ class CircleDimensionWindow:
     # build the entry for obstacle radius
     self.entry_obstacle_radius = gtk.Entry()
 
+    # build the preview button
+    self.button_preview = gtk.Button( 'Preview' )
+    self.button_preview.connect( 'clicked', self.on_preview )
+
     # build the ok cancel buttons
     self.button_ok = gtk.Button('OK')
     self.button_cancel = gtk.Button('Cancel')
@@ -75,35 +79,42 @@ class CircleDimensionWindow:
     obs_position_box_x = gtk.HBox( spacing = 5 )
     obs_position_box_x.pack_start( self.label_obstacle_position_x, False, False )
     obs_position_box_x.pack_start( self.entry_obstacle_position_x, False, False )
-    obs_position_box_x.pack_start( self.button_position_update, False, False )
 
     # pack the obstacle y positon label and entry
     obs_position_box_y = gtk.HBox( spacing = 5 )
     obs_position_box_y.pack_start( self.label_obstacle_position_y, False, False )
     obs_position_box_y.pack_start( self.entry_obstacle_position_y, False, False )
 
+    # pack the update x and y position button
+    obs_position_update_box = gtk.HBox( spacing = 5 )
+    obs_position_update_box.pack_start( self.button_position_update, False, False )
+
     # pack the obstacle radius label and entry
     obs_radius_box = gtk.HBox( spacing = 5 )
     obs_radius_box.pack_start( self.label_obstacle_radius, False, False )
     obs_radius_box.pack_start( self.entry_obstacle_radius, False, False )
 
-    # pack the ok cancel buttons
-    ok_cancel_box = gtk.HBox( spacing = 5)
-    ok_cancel_box.pack_start( self.button_ok, False, False)
-    ok_cancel_box.pack_start( self.button_cancel, False, False)
+    # pack the preview ok cancel buttons
+    preview_ok_cancel_box = gtk.HBox( spacing = 5)
+    preview_ok_cancel_box.pack_start( self.button_preview, False, False )
+    preview_ok_cancel_box.pack_start( self.button_ok, False, False )
+    preview_ok_cancel_box.pack_start( self.button_cancel, False, False )
 
     # align the controls
-    obs_position_x_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0)
+    obs_position_x_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0 )
     obs_position_x_alignment.add( obs_position_box_x )
 
-    obs_position_y_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0)
+    obs_position_y_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0 )
     obs_position_y_alignment.add( obs_position_box_y )
+
+    obs_position_update_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0 )
+    obs_position_update_alignment.add( obs_position_update_box )
 
     obs_radius_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0)
     obs_radius_alignment.add( obs_radius_box )
 
     ok_cancel_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0 )
-    ok_cancel_alignment.add( ok_cancel_box )
+    ok_cancel_alignment.add( preview_ok_cancel_box )
 
     # create the alert box
     self.alert_box = gtk.Label()
@@ -112,6 +123,7 @@ class CircleDimensionWindow:
     layout_box = gtk.VBox()
     layout_box.pack_start( obs_position_x_alignment, False, False, 5 )
     layout_box.pack_start( obs_position_y_alignment, False, False, 5 )
+    layout_box.pack_start( obs_position_update_alignment, False, False, 5 )
     layout_box.pack_start( obs_radius_alignment, False, False, 5 )
     layout_box.pack_start( ok_cancel_alignment, False, False, 5 )
     layout_box.pack_start( self.alert_box, False, False, 5 )
@@ -127,12 +139,20 @@ class CircleDimensionWindow:
     self.alert_box.set_text( 'To select position - click on the simulator window')
 
   def on_ok(self, widget):
-
-
+    pass
 
 
   def on_cancel(self, widget):
     self.window_circle_dimension.destroy()
 
   def on_update(self, widget):
+    self.entry_obstacle_position_x.set_text( self.x_circle )
+    self.entry_obstacle_position_y.set_text( self.y_circle )
+
+
+  def on_preview(self, widget):
     pass
+
+  def set_coordinate_circle(self, x, y):
+    self.x_circle = x
+    self.y_circle = y

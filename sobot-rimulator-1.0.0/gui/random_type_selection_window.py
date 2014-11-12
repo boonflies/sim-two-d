@@ -22,34 +22,31 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 
-from circle_dimension_window import *
+from models.map_manager import *
 
 # user response codes for file chooser dialog buttons
 LS_DIALOG_RESPONSE_CANCEL = 1
 LS_DIALOG_RESPONSE_ACCEPT = 2
 
-class ObstacleSelectionWindow:
+class RandomTypeSelectionWindow:
 
-  def __init__( self ):
+  def __init__( self, simulator ):
 
-    # obstacle position
-    self.x_obstacle = ''
-    self.y_obstacle = ''
+    # bint the simulator
+    self.simulator = simulator
 
-    # initialize circle_dimension_window
-    self.window_circle_dimension = CircleDimensionWindow()
-
-  def create_obstacle_window( self ):
+    # save the current map - (to be used when cancel button of the random type selection window is clicked)
+    self.simulator.save_map( 'before obstacle type selection' )
 
     # initialize the window
-    self.window_draw_obstacle = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    self.window_draw_obstacle.set_title( "Obstacle Property Selection" )
-    self.window_draw_obstacle.set_resizable(True)
+    self.window_obstacle_type = gtk.Window(gtk.WINDOW_TOPLEVEL)
+    self.window_obstacle_type.set_title( "Obstacle Type Selection" )
+    self.window_obstacle_type.set_resizable(True)
 
     # == initialize the buttons
 
     # build the label for obstacle selection combobox
-    self.label_obstacle_selection = gtk.Label( 'Obstacle type' )
+    self.label_random_type = gtk.Label( 'Type of Obstacles' )
 
     # build the obstacle selection combobox
     self.combobox_obstacle_selection = gtk.combo_box_new_text()
@@ -57,10 +54,6 @@ class ObstacleSelectionWindow:
     self.combobox_obstacle_selection.append_text('Circle')
     self.text = self.combobox_obstacle_selection.get_active_text()
     self.combobox_obstacle_selection.connect('changed', self.on_change_cb)
-
-    # build the dimension button
-    self.button_dimension = gtk.Button( 'Dimension' )
-    self.button_dimension.connect( 'clicked', self.on_dimension )
 
     # build the ok cancel buttons
     self.button_ok = gtk.Button('OK')
@@ -73,9 +66,8 @@ class ObstacleSelectionWindow:
 
     # pack the obstacle selection buttons
     obs_selection_box = gtk.HBox( spacing = 5 )
-    obs_selection_box.pack_start( self.label_obstacle_selection )
+    obs_selection_box.pack_start( self.label_random_type )
     obs_selection_box.pack_start( self.combobox_obstacle_selection, False, False )
-    obs_selection_box.pack_start( self.button_dimension, False, False )
 
     # pack the ok cancel buttons
     ok_cancel_box = gtk.HBox( spacing = 5)
@@ -100,31 +92,31 @@ class ObstacleSelectionWindow:
 
 
     # apply the layout
-    self.window_draw_obstacle.add( layout_box )
+    self.window_obstacle_type.add( layout_box )
 
     # show the simulator window
-    self.window_draw_obstacle.show_all()
+    self.window_obstacle_type.show_all()
+
+    # set alert box content
+    self.alert_box.set_text( 'Select the type of random obstacles from combobox')
 
 
   def on_change_cb(self, widget):
     model = self.combobox_obstacle_selection.get_model()
     index = self.combobox_obstacle_selection.get_active()
-    self.alert_box.set_text( 'Define dimension of obstacle - click Dimension button')
+    if index == 0:
+        self.random_obstacle_type = 'rectangle'
+    else:
+        self.random_obstacle_type = 'circle'
 
+    self.simulator.initialize_sim_random_map( self.random_obstacle_type )
 
   def on_ok(self, widget):
-    pass
-
+    self.window_obstacle_type.destroy()
 
   def on_cancel(self, widget):
-    self.window_draw_obstacle.destroy()
-
+    self.simulator.load_map( 'before obstacle type selection' )
+    self.window_obstacle_type.destroy()
 
   def on_dimension(self, widget):
-    self.window_circle_dimension.create_circle_dimension_window()
-
-
-  def set_coordinate( self, x, y):
-    self.x_obstacle = x
-    self.y_obstacle = y
-    self.window_circle_dimension.set_coordinate_circle( self.x_obstacle, self.y_obstacle )
+    self.window_circle_dimension = CircleDimensionWindow()

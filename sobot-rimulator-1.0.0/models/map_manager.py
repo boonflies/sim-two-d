@@ -43,11 +43,21 @@ MIN_GOAL_CLEARANCE = 0.2    # meters
 
 class MapManager:
 
-  def __init__( self, *args ):
+  def __init__( self ):
     self.current_obstacles = []
     self.current_goal = None
 
-  def random_map( self, world ):
+  def random_map( self, *args ): # args = world - during initialize, args = world and obstacle_type during random map button click
+    if len(args) == 2:
+        # bind the world
+        world = args[0]
+        # Obstacle type
+        obstacle_type = args[1]
+    else:
+        # bind the world
+        world = args[0]
+        obstacle_type = 'rectangle'
+
     # OBSTACLE PARAMS
     obs_min_dim = OBS_MIN_DIM
     obs_max_dim = OBS_MAX_DIM
@@ -61,71 +71,70 @@ class MapManager:
     goal_min_dist = GOAL_MIN_DIST
     goal_max_dist = GOAL_MAX_DIST
 
-    if arg[0] == 'user':
-        pass
-    else:
-        # BUILD RANDOM ELEMENTS
-        # generate the goal
-        goal_dist_range = goal_max_dist - goal_min_dist
-        dist = goal_min_dist + ( random() * goal_dist_range )
-        phi = -pi + ( random() * 2 * pi )
-        x = dist * sin( phi )
-        y = dist * cos( phi )
-        goal = [ x, y ]
 
-        # generate a proximity test geometry for the goal
-        r = MIN_GOAL_CLEARANCE
-        n = 6
-        goal_test_geometry = []
-        for i in range( n ):
-          goal_test_geometry.append(
-              [ x + r*cos( i * 2*pi/n ),
-                y + r*sin( i * 2*pi/n ) ] )
-        goal_test_geometry = Polygon( goal_test_geometry )
+    # BUILD RANDOM ELEMENTS
+    # generate the goal
+    goal_dist_range = goal_max_dist - goal_min_dist
+    dist = goal_min_dist + ( random() * goal_dist_range )
+    phi = -pi + ( random() * 2 * pi )
+    x = dist * sin( phi )
+    y = dist * cos( phi )
+    goal = [ x, y ]
 
-        # generate the obstacles
-        obstacles = []
-        obs_dim_range = obs_max_dim - obs_min_dim
-        obs_dist_range = obs_max_dist - obs_min_dist
-        num_obstacles = randrange( obs_min_count, obs_max_count+1 )
+    # generate a proximity test geometry for the goal
+    r = MIN_GOAL_CLEARANCE
+    n = 6
+    goal_test_geometry = []
+    for i in range( n ):
+      goal_test_geometry.append(
+          [ x + r*cos( i * 2*pi/n ),
+            y + r*sin( i * 2*pi/n ) ] )
+    goal_test_geometry = Polygon( goal_test_geometry )
 
-        test_geometries = [ r.global_geometry for r in world.robots ] + [ goal_test_geometry ]
-        while len( obstacles ) < num_obstacles:
+    # generate the obstacles
+    obstacles = []
+    obs_dim_range = obs_max_dim - obs_min_dim
+    obs_dist_range = obs_max_dist - obs_min_dist
+    num_obstacles = randrange( obs_min_count, obs_max_count+1 )
 
-          # generate dimensions
-          width = obs_min_dim + ( random() * obs_dim_range )
-          height = obs_min_dim + ( random() * obs_dim_range )
-          while width + height > obs_max_combined_dim:
-            height = obs_min_dim + ( random() * obs_dim_range )
+    test_geometries = [ r.global_geometry for r in world.robots ] + [ goal_test_geometry ]
+    while len( obstacles ) < num_obstacles:
 
-          # generate position
-          dist = obs_min_dist + ( random() * obs_dist_range )
-          phi = -pi + ( random() * 2 * pi )
-          x = dist * sin( phi )
-          y = dist * cos( phi )
+      # generate dimensions
+      width = obs_min_dim + ( random() * obs_dim_range )
+      height = obs_min_dim + ( random() * obs_dim_range )
+      while width + height > obs_max_combined_dim:
+        height = obs_min_dim + ( random() * obs_dim_range )
 
-          # generate orientation
-          theta = -pi + ( random() * 2 * pi )
+      # generate position
+      dist = obs_min_dist + ( random() * obs_dist_range )
+      phi = -pi + ( random() * 2 * pi )
+      x = dist * sin( phi )
+      y = dist * cos( phi )
 
-          # test if the rectangular obstacle overlaps the robots or the goal
-          obstacle = RectangleObstacle( width, height,
+      # generate orientation
+      theta = -pi + ( random() * 2 * pi )
+
+      if obstacle_type == 'rectangle':
+        # test if the rectangular obstacle overlaps the robots or the goal
+        obstacle = RectangleObstacle( width, height,
+                                        Pose( x, y, theta ) )
+      else:
+        # test if the circular obstacle overlaps the robots or the goal
+        obstacle = CircularObstacle( width, x, y,
                                         Pose( x, y, theta ) )
 
-          # test if the circular obstacle overlaps the robots or the goal
-    ##      obstacle = CircularObstacle( width, x, y,
-    ##                                    Pose( x, y, theta ) )
+      intersects = False
+      for test_geometry in test_geometries:
+        intersects |= geometrics.convex_polygon_intersect_test( test_geometry, obstacle.global_geometry )
+      if intersects == False: obstacles.append( obstacle )
 
-          intersects = False
-          for test_geometry in test_geometries:
-            intersects |= geometrics.convex_polygon_intersect_test( test_geometry, obstacle.global_geometry )
-          if intersects == False: obstacles.append( obstacle )
+    # update the current obstacles and goal
+    self.current_obstacles = obstacles
+    self.current_goal = goal
 
-        # update the current obstacles and goal
-        self.current_obstacles = obstacles
-        self.current_goal = goal
-
-        # apply the new obstacles and goal to the world
-        self.apply_to_world( world )
+    # apply the new obstacles and goal to the world
+    self.apply_to_world( world )
 
 
   def save_map( self, filename ):
