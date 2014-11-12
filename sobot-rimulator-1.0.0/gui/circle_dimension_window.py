@@ -47,10 +47,6 @@ class CircleDimensionWindow:
     # build the entry for obstacle x position
     self.entry_obstacle_position_x = gtk.Entry()
 
-    # build position update button
-    self.button_position_update = gtk.Button( 'Click to Update X, Y position' )
-    self.button_position_update.connect( 'clicked', self.on_update )
-
     # build the label for obstacle y position
     self.label_obstacle_position_y = gtk.Label( 'Y Obstacle Position' )
 
@@ -85,10 +81,6 @@ class CircleDimensionWindow:
     obs_position_box_y.pack_start( self.label_obstacle_position_y, False, False )
     obs_position_box_y.pack_start( self.entry_obstacle_position_y, False, False )
 
-    # pack the update x and y position button
-    obs_position_update_box = gtk.HBox( spacing = 5 )
-    obs_position_update_box.pack_start( self.button_position_update, False, False )
-
     # pack the obstacle radius label and entry
     obs_radius_box = gtk.HBox( spacing = 5 )
     obs_radius_box.pack_start( self.label_obstacle_radius, False, False )
@@ -107,9 +99,6 @@ class CircleDimensionWindow:
     obs_position_y_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0 )
     obs_position_y_alignment.add( obs_position_box_y )
 
-    obs_position_update_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0 )
-    obs_position_update_alignment.add( obs_position_update_box )
-
     obs_radius_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0)
     obs_radius_alignment.add( obs_radius_box )
 
@@ -123,7 +112,6 @@ class CircleDimensionWindow:
     layout_box = gtk.VBox()
     layout_box.pack_start( obs_position_x_alignment, False, False, 5 )
     layout_box.pack_start( obs_position_y_alignment, False, False, 5 )
-    layout_box.pack_start( obs_position_update_alignment, False, False, 5 )
     layout_box.pack_start( obs_radius_alignment, False, False, 5 )
     layout_box.pack_start( ok_cancel_alignment, False, False, 5 )
     layout_box.pack_start( self.alert_box, False, False, 5 )
@@ -145,14 +133,10 @@ class CircleDimensionWindow:
   def on_cancel(self, widget):
     self.window_circle_dimension.destroy()
 
-  def on_update(self, widget):
-    self.entry_obstacle_position_x.set_text( self.x_circle )
-    self.entry_obstacle_position_y.set_text( self.y_circle )
-
 
   def on_preview(self, widget):
     pass
 
   def set_coordinate_circle(self, x, y):
-    self.x_circle = x
-    self.y_circle = y
+    self.entry_obstacle_position_x.set_text( x )
+    self.entry_obstacle_position_y.set_text( y )

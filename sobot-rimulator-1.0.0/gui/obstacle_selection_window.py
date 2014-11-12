@@ -105,6 +105,9 @@ class ObstacleSelectionWindow:
     # show the simulator window
     self.window_draw_obstacle.show_all()
 
+    # display alert to select a position
+    self.alert_box.set_text( 'Select an obstacle shape from the Drop Down list' )
+
 
   def on_change_cb(self, widget):
     model = self.combobox_obstacle_selection.get_model()
@@ -128,3 +131,4 @@ class ObstacleSelectionWindow:
     self.x_obstacle = x
     self.y_obstacle = y
     self.window_circle_dimension.set_coordinate_circle( self.x_obstacle, self.y_obstacle )
+
