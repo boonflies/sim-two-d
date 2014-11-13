@@ -36,7 +36,7 @@ class RandomTypeSelectionWindow:
     self.simulator = simulator
 
     # save the current map - (to be used when cancel button of the random type selection window is clicked)
-    self.simulator.save_map( 'before obstacle type selection' )
+    self.simulator.save_map( 'current map' )
 
     # initialize the window
     self.window_obstacle_type = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -115,7 +115,7 @@ class RandomTypeSelectionWindow:
     self.window_obstacle_type.destroy()
 
   def on_cancel(self, widget):
-    self.simulator.load_map( 'before obstacle type selection' )
+    self.simulator.load_map( 'current map' )
     self.window_obstacle_type.destroy()
 
   def on_dimension(self, widget):

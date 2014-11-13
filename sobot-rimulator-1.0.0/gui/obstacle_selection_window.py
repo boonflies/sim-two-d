@@ -30,14 +30,17 @@ LS_DIALOG_RESPONSE_ACCEPT = 2
 
 class ObstacleSelectionWindow:
 
-  def __init__( self ):
+  def __init__( self, simulator ):
 
     # obstacle position
     self.x_obstacle = ''
     self.y_obstacle = ''
 
+    # bind the simulator
+    self.simulator = simulator
+
     # initialize circle_dimension_window
-    self.window_circle_dimension = CircleDimensionWindow()
+    self.window_circle_dimension = CircleDimensionWindow( self.simulator )
 
   def create_obstacle_window( self ):
 
@@ -120,6 +123,7 @@ class ObstacleSelectionWindow:
 
 
   def on_cancel(self, widget):
+    self.simulator.load_map( 'current map' )
     self.window_draw_obstacle.destroy()
 
 

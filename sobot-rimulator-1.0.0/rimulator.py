@@ -70,7 +70,6 @@ class Simulator:
     robot = Robot()
     self.world.add_robot( robot )
 
-
     # generate a random environment
     if random:
       self.map_manager.random_map( self.world )
@@ -168,6 +167,12 @@ class Simulator:
     # draw the resulting world
     self.draw_world()
 
+  def update_map( self, shape, radius, x, y ):
+    if shape == 'circle':
+        self.map_manager.update_map_circle( radius, x, y )
+        self.load_map( 'updated map' )
+    else:
+        pass
 
 # RUN THE SIM:
 Simulator()

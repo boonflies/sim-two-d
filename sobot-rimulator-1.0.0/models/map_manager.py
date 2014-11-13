@@ -107,6 +107,7 @@ class MapManager:
         height = obs_min_dim + ( random() * obs_dim_range )
 
       # generate position
+
       dist = obs_min_dist + ( random() * obs_dist_range )
       phi = -pi + ( random() * 2 * pi )
       x = dist * sin( phi )
@@ -120,8 +121,9 @@ class MapManager:
         obstacle = RectangleObstacle( width, height,
                                         Pose( x, y, theta ) )
       else:
+        radius = width/2
         # test if the circular obstacle overlaps the robots or the goal
-        obstacle = CircularObstacle( width, x, y,
+        obstacle = CircularObstacle( radius, x, y,
                                         Pose( x, y, theta ) )
 
       intersects = False
@@ -132,6 +134,8 @@ class MapManager:
     # update the current obstacles and goal
     self.current_obstacles = obstacles
     self.current_goal = goal
+    print 'goal'
+    print goal
 
     # apply the new obstacles and goal to the world
     self.apply_to_world( world )
@@ -157,3 +161,8 @@ class MapManager:
     # program the robot supervisors
     for robot in world.robots:
       robot.supervisor.goal = self.current_goal[:]
+
+  def update_map_circle(self, radius, x, y ):
+    obstacle = CircularObstacle( radius, x, y, Pose(x, y, 1) )
+    self.current_obstacles.append( obstacle )
+    self.save_map( 'updated map' )

@@ -48,11 +48,11 @@ class Viewer:
     self.x_coordinate = ''
     self.y_coordinate = ''
 
-    # Initialize obsacle selection window
-    self.obstacle_selection_window = ObstacleSelectionWindow()
-
     # bind the simulator
     self.simulator = simulator
+
+    # Initialize obsacle selection window
+    self.obstacle_selection_window = ObstacleSelectionWindow( self.simulator )
 
     # initialize frame
     self.current_frame = Frame()
@@ -257,8 +257,8 @@ class Viewer:
 
 
   def on_draw_obstacle( self, widget):
+    self.simulator.save_map( 'current map' )
     self.obstacle_selection_window.create_obstacle_window()
-
 
   def on_save_map( self, widget ):
     # create the file chooser
@@ -366,4 +366,5 @@ class Viewer:
     self.x_coordinate = str( event.x )
     self.y_coordinate = str( event.y )
     self.obstacle_selection_window.set_coordinate( self.x_coordinate, self.y_coordinate )
+    print 'position'
     print event.x, event.y

@@ -27,10 +27,15 @@ LS_DIALOG_RESPONSE_ACCEPT = 2
 
 class CircleDimensionWindow:
 
-  def __init__( self ):
+  def __init__( self, simulator ):
 
+    # cirular obstacle dimensions
     self.x_circle = ''
     self.y_circle = ''
+    self.radius_circle = ''
+
+    # bind the simulator
+    self.simulator = simulator
 
   def create_circle_dimension_window( self ):
 
@@ -135,7 +140,29 @@ class CircleDimensionWindow:
 
 
   def on_preview(self, widget):
-    pass
+    self.radius_circle = self.entry_obstacle_radius.get_text()
+    self.x_circle = self.entry_obstacle_position_x.get_text()
+    self.y_circle = self.entry_obstacle_position_y.get_text()
+    x = float( self.x_circle )
+    y = float( self.y_circle )
+    radius = float( self.radius_circle )
+    radius = radius * 0.01
+    centre_x = 399.862129895628
+    centre_y = 307.994033906236
+    if centre_x < x:
+        x = ( x - centre_x ) * 0.01
+    else:
+        x = ( x - centre_x ) * 0.01
+
+    if centre_y < y:
+        y = ( centre_y - y ) * 0.01
+    else:
+        y = ( centre_y - y ) * 0.01
+
+    print 'x ahd y'
+    print x, y
+    self.simulator.update_map( 'circle', radius, x, y )
+
 
   def set_coordinate_circle(self, x, y):
     self.entry_obstacle_position_x.set_text( x )
