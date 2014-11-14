@@ -136,6 +136,7 @@ class CircleDimensionWindow:
 
 
   def on_cancel(self, widget):
+    self.simulator.load_map( 'current map' )
     self.window_circle_dimension.destroy()
 
 
@@ -147,20 +148,29 @@ class CircleDimensionWindow:
     y = float( self.y_circle )
     radius = float( self.radius_circle )
     radius = radius * 0.01
-    centre_x = 399.862129895628
-    centre_y = 307.994033906236
-    if centre_x < x:
-        x = ( x - centre_x ) * 0.01
-    else:
-        x = ( x - centre_x ) * 0.01
+    centre_x = 399.215
+    centre_y = 307.1984
+    ref_x1 = centre_x + ( x - centre_x) * 0.4
+    ref_y1 = centre_y - ( centre_y - y ) * 0.4
 
-    if centre_y < y:
-        y = ( centre_y - y ) * 0.01
-    else:
-        y = ( centre_y - y ) * 0.01
-
-    print 'x ahd y'
+    x = ( x - centre_x ) * 0.01
+    y = ( centre_y - y ) * 0.01
+    print 'one'
     print x, y
+
+##    if x > centre_x and x < ref_x1:
+##        x = ( x - centre_x ) * 0.01
+##        y = ( centre_y - y ) * 0.01
+##    elif x < centre_x:
+##        x = ( x - centre_x ) * 0.01
+##    else:
+
+##
+##    if centre_y < y:
+##        y = ( centre_y - y ) * 0.01
+##    else:
+##        y = ( centre_y - y ) * 0.01
+
     self.simulator.update_map( 'circle', radius, x, y )
 
 

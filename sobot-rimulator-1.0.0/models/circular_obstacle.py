@@ -52,4 +52,5 @@ class CircularObstacle:
 ##                  [ -halfwidth_x, -halfwidth_y ],
 ##                  [ -halfwidth_x,  halfwidth_y ] ]
     self.geometry = Polygon( vertexes )
-    self.global_geometry = Polygon( vertexes ).get_transformation_to_pose( self.pose )
+    self.global_geometry = Polygon( vertexes )
+##    self.global_geometry = Polygon( vertexes ).get_transformation_to_pose( self.pose )
