@@ -52,7 +52,7 @@ class Viewer:
     self.simulator = simulator
 
     # Initialize obsacle selection window
-    self.obstacle_selection_window = ObstacleSelectionWindow( self.simulator )
+    #self.obstacle_selection_window = ObstacleSelectionWindow( self.simulator )
 
     # initialize frame
     self.current_frame = Frame()
@@ -143,8 +143,8 @@ class Viewer:
     self.button_random_map.connect( 'clicked', self.on_random_map )
 
     # build the clear map button
-    self.button_clear_map = gtk.Button( 'Clear Map')
-    self.button_clear_map.connect('clicked', self.on_clear_map)
+    self.button_draw_map = gtk.Button( 'Draw Map')
+    self.button_draw_map.connect('clicked', self.on_draw_map)
 
 
     # build the draw-invisibles toggle button
@@ -169,7 +169,7 @@ class Viewer:
     map_controls_box.pack_start( self.button_save_map, False, False )
     map_controls_box.pack_start( self.button_load_map, False, False )
     map_controls_box.pack_start( self.button_random_map, False, False )
-    map_controls_box.pack_start( self.button_clear_map, False, False)
+    map_controls_box.pack_start( self.button_draw_map, False, False)
 
     # pack the invisibles button
     invisibles_button_box = gtk.HBox()
@@ -258,7 +258,8 @@ class Viewer:
 
   def on_draw_obstacle( self, widget):
     self.simulator.save_map( 'current map' )
-    self.obstacle_selection_window.create_obstacle_window()
+    self.simulator.save_map( 'backup map' )
+    self.obstacle_selection_window = ObstacleSelectionWindow( self.simulator )
 
   def on_save_map( self, widget ):
     # create the file chooser
@@ -305,29 +306,11 @@ class Viewer:
     random_obstacle_type = RandomTypeSelectionWindow( self.simulator )
 ##    self.simulator.random_map()
 
-  def on_clear_map(self, widget):
-    pass
-      # reset the viewer
-##    self.control_panel_state_init()
-##
-##    # create the simulation world
-##    self.world = World( self.period )
-##
-##    # create the robot
-##    robot = Robot()
-##    self.world.add_robot( robot )
-##
-##    # generate a random environment
-##    if random:
-##      self.map_manager.random_map( self.world )
-##    else:
-##      self.map_manager.apply_to_world( self.world )
-##
-##    # create the world view
-##    self.world_view = WorldView( self.world, self.viewer )
-##
-##    # render the initial world
-##    self.draw_world()
+  def on_draw_map(self, widget):
+    self.simulator.save_map( 'current map' )
+    self.simulator.clear_map()
+    self.obstacle_selection_window = ObstacleSelectionWindow( self.simulator )
+
 
   def on_draw_invisibles( self, widget ):
     # toggle the draw_invisibles state
@@ -365,6 +348,7 @@ class Viewer:
   def onclick(self, Box, event):
     self.x_coordinate = str( event.x )
     self.y_coordinate = str( event.y )
+    #self.obstacle_selection_window = ObstacleSelectionWindow( self.simulator )
     self.obstacle_selection_window.set_coordinate( self.x_coordinate, self.y_coordinate )
     print 'position'
     print event.x, event.y

@@ -166,3 +166,10 @@ class MapManager:
     obstacle = CircularObstacle( radius, x, y, Pose(x, y, 1) )
     self.current_obstacles.append( obstacle )
     self.save_map( 'updated map' )
+
+  def edit_map_circle(self, radius, x, y):
+    self.current_obstacles.pop()
+    obstacle = CircularObstacle( radius, x, y, Pose(x, y, 1) )
+    self.current_obstacles.append( obstacle )
+    self.save_map( 'updated map' )
+

@@ -174,5 +174,15 @@ class Simulator:
     else:
         pass
 
+  def edit_map( self, shape, radius, x, y ):
+    if shape == 'circle':
+        self.map_manager.edit_map_circle( radius, x, y )
+        self.load_map( 'updated map' )
+    else:
+        pass
+
+  def clear_map(self):
+    self.load_map( 'empty map with goal and robot' )
+
 # RUN THE SIM:
 Simulator()

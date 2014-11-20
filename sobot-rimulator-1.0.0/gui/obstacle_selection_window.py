@@ -39,11 +39,6 @@ class ObstacleSelectionWindow:
     # bind the simulator
     self.simulator = simulator
 
-    # initialize circle_dimension_window
-    self.window_circle_dimension = CircleDimensionWindow( self.simulator )
-
-  def create_obstacle_window( self ):
-
     # initialize the window
     self.window_draw_obstacle = gtk.Window(gtk.WINDOW_TOPLEVEL)
     self.window_draw_obstacle.set_title( "Obstacle Property Selection" )
@@ -61,15 +56,13 @@ class ObstacleSelectionWindow:
     self.text = self.combobox_obstacle_selection.get_active_text()
     self.combobox_obstacle_selection.connect('changed', self.on_change_cb)
 
-    # build the dimension button
-    self.button_dimension = gtk.Button( 'Dimension' )
-    self.button_dimension.connect( 'clicked', self.on_dimension )
-
-    # build the ok cancel buttons
-    self.button_ok = gtk.Button('OK')
-    self.button_cancel = gtk.Button('Cancel')
-    self.button_ok.connect('clicked', self.on_ok)
-    self.button_cancel.connect('clicked', self.on_cancel)
+    # build the dimension done buttons
+    self.button_previous_map = gtk.Button( 'Previous Map' )
+    self.button_previous_map.connect( 'clicked', self.on_previous_map )
+    self.button_dimension = gtk.Button( 'DIMENSION' )
+    self.button_done = gtk.Button( 'DONE' )
+    self.button_dimension.connect('clicked', self.on_dimension)
+    self.button_done.connect('clicked', self.on_done)
 
 
     # == lay out the window
@@ -78,12 +71,12 @@ class ObstacleSelectionWindow:
     obs_selection_box = gtk.HBox( spacing = 5 )
     obs_selection_box.pack_start( self.label_obstacle_selection )
     obs_selection_box.pack_start( self.combobox_obstacle_selection, False, False )
-    obs_selection_box.pack_start( self.button_dimension, False, False )
 
     # pack the ok cancel buttons
     ok_cancel_box = gtk.HBox( spacing = 5)
-    ok_cancel_box.pack_start( self.button_ok, False, False)
-    ok_cancel_box.pack_start( self.button_cancel, False, False)
+    ok_cancel_box.pack_start( self.button_previous_map, False, False)
+    ok_cancel_box.pack_start( self.button_dimension, False, False)
+    ok_cancel_box.pack_start( self.button_done, False, False)
 
     # align the controls
     obs_selection_alignment = gtk.Alignment( 0.5, 0.0, 0.0, 1.0 )
@@ -113,26 +106,28 @@ class ObstacleSelectionWindow:
 
 
   def on_change_cb(self, widget):
-    model = self.combobox_obstacle_selection.get_model()
-    index = self.combobox_obstacle_selection.get_active()
-    self.alert_box.set_text( 'Define dimension of obstacle - click Dimension button')
+    tree_iter = widget.get_active_iter()
+    if tree_iter != None:
+        model = self.combobox_obstacle_selection.get_model()
+        #index = self.combobox_obstacle_selection.get_active()
+        self.obstacle_type = model[tree_iter][0]
+    print self.obstacle_type
+    self.alert_box.set_text( 'Define dimension of obstacle - click DIMENSION button')
 
 
-  def on_ok(self, widget):
-    pass
-
-
-  def on_cancel(self, widget):
+  def on_previous_map(self, widget):
     self.simulator.load_map( 'current map' )
-    self.window_draw_obstacle.destroy()
 
 
   def on_dimension(self, widget):
-    self.window_circle_dimension.create_circle_dimension_window()
+    self.window_circle_dimension = CircleDimensionWindow( self.simulator )
+
+
+  def on_done(self, widget):
+    self.window_draw_obstacle.destroy()
 
 
   def set_coordinate( self, x, y):
     self.x_obstacle = x
     self.y_obstacle = y
     self.window_circle_dimension.set_coordinate_circle( self.x_obstacle, self.y_obstacle )
-
