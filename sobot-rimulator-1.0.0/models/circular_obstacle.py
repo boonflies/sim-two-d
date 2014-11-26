@@ -30,7 +30,7 @@ class CircularObstacle:
     self.pose = pose
     self.x = x
     self.y = y
-    self.radius = radius
+    self.radius = radius/2
 
     # define the geometry
     vertexes = []
@@ -44,13 +44,5 @@ class CircularObstacle:
         points = [x_ver[-1], y_ver[-1]]
         vertexes.append(points)
 
-##    # define the geometry
-##    halfwidth_x = width * 0.5
-##    halfwidth_y = height * 0.5
-##    vertexes = [  [  halfwidth_x,  halfwidth_y ],
-##                  [  halfwidth_x, -halfwidth_y ],
-##                  [ -halfwidth_x, -halfwidth_y ],
-##                  [ -halfwidth_x,  halfwidth_y ] ]
     self.geometry = Polygon( vertexes )
     self.global_geometry = Polygon( vertexes )
-##    self.global_geometry = Polygon( vertexes ).get_transformation_to_pose( self.pose )

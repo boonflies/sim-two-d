@@ -182,7 +182,8 @@ class Simulator:
         pass
 
   def clear_map(self):
-    self.load_map( 'empty map with goal and robot' )
+    self.map_manager.clear_map()
+    self.load_map( 'updated map' )
 
 # RUN THE SIM:
 Simulator()

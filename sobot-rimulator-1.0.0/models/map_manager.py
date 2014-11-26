@@ -173,3 +173,7 @@ class MapManager:
     self.current_obstacles.append( obstacle )
     self.save_map( 'updated map' )
 
+  def clear_map(self):
+    self.save_map( 'current map' )
+    self.current_obstacles = []
+    self.save_map( 'updated map')

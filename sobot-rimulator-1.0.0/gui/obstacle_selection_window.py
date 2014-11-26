@@ -120,6 +120,7 @@ class ObstacleSelectionWindow:
 
 
   def on_dimension(self, widget):
+    self.simulator.save_map( 'backup map' )
     self.window_circle_dimension = CircleDimensionWindow( self.simulator )
 
 

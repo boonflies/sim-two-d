@@ -29,6 +29,7 @@ from frame import *
 from painter import *
 from obstacle_selection_window import *
 from random_type_selection_window import *
+from window_robot_spec import *
 
 DEFAULT_VIEW_PIX_W = 800    # pixels
 DEFAULT_VIEW_PIX_H = 800    # pixels
@@ -65,6 +66,7 @@ class Viewer:
     # initialize the window
     self.window = gtk.Window( gtk.WINDOW_TOPLEVEL )
     self.window.set_title( 'Sobot Rimulator' )
+    #self.window.set_border_width(8)
     self.window.set_resizable( True )
     self.window.connect( 'delete_event', self.on_delete )
 
@@ -81,6 +83,9 @@ class Viewer:
     self.painter = Painter( self.drawing_area, self.pixels_per_meter )
 
     # == initialize the buttons
+    # initialize the robot button
+    self.button_robot = gtk.Button( 'Robot' )
+    self.button_robot.connect( 'clicked', self.on_robot )
 
     # build the play button
     self.button_play = gtk.Button( 'Play' )
@@ -158,6 +163,7 @@ class Viewer:
 
     # pack the simulation control buttons
     sim_controls_box = gtk.HBox( spacing = 5 )
+    sim_controls_box.pack_start( self.button_robot, False, False )
     sim_controls_box.pack_start( self.button_play, False, False )
     sim_controls_box.pack_start( self.button_stop, False, False )
     sim_controls_box.pack_start( self.button_step, False, False )
@@ -240,6 +246,9 @@ class Viewer:
 
 
   # EVENT HANDLERS:
+  def on_robot( self, widget ):
+    self.window_robot_spec = WindowRobotSpec( self.simulator )
+
   def on_play( self, widget ):
     self.simulator.play_sim()
 

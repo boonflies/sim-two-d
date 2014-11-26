@@ -204,9 +204,8 @@ class CircleDimensionWindow:
 
 
   def on_remove_obstcle(self, widget):
-    self.preview_count = 0
     self.simulator.load_map( 'backup map' )
-
+    self.preview_count = 0
 
   def on_preview(self, widget):
     print self.preview_count
